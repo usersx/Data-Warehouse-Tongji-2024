@@ -75,19 +75,22 @@ def merge_movies():
     # 2.去除ASIN重的数据
     df.drop_duplicates(subset=['ASIN'], keep='first', inplace=True)
 
-    # 3. 将 Title 和 Directors 转换为小写以便统一
+    # 3. 将 Title 转换为小写以便统一
     df['Title'] = df['Title'].str.lower().str.strip()
 
     # 4. 处理 Directors 列，填充缺失值为 'un'，并转换为小写
     df['Directors'] = df['Directors'].fillna('un').str.lower().str.strip()
 
-    # 5. 基于 Title 和 Directors 进行分组，认为同组的为同一部电影
+    # 5. 记录原始顺序
+    df = df.reset_index().rename(columns={'index': 'original_order'})
+
+    # 6. 基于 Title 和 Directors 进行分组，认为同组的为同一部电影
     grouped = df.groupby(['Title', 'Directors'])
 
-    # 6. 创建去重后的数据，保留每组的第一条记录
+    # 7. 创建去重后的数据，保留每组的第一条记录
     deduped_df = grouped.first().reset_index()
 
-    # 7. 建立数据血缘关系
+    # 8. 建立数据血缘关系
     # 收集每组的所有 ASIN
     mapping_df = grouped['ASIN'].apply(list).reset_index()
     mapping_df = mapping_df.rename(columns={'ASIN': 'ASIN_List'})
@@ -107,16 +110,19 @@ def merge_movies():
     with open('id_mappings.pkl', 'wb') as file:
         pickle.dump(id_mappings, file)
 
-    # 8. 保存去重后的数据
-    # 获取原始列顺序
+    # 9. 排序去重后的数据按照 original_order
+    deduped_df = deduped_df.sort_values('original_order')
+
+    # 10. 获取原始列顺序
     original_columns = pd.read_csv('./movie_info_2.csv', nrows=0).columns.tolist()
 
-    # 确保去重后的数据按原始顺序排列
+    # 确保去重后的数据按原始顺序排列，去掉 'original_order'
     deduped_df = deduped_df[original_columns]
 
+    # 保存去重后的数据
     deduped_df.to_csv('movie_info_deduplication.csv', index=False, encoding='utf-8')
 
-    # 9. 保存映射关系
+    # 保存映射关系
     mapping_df.to_csv('title_directors_mapping.csv', index=False, encoding='utf-8')
 
     print("电影信息去重和数据血缘关系建立完成。")
