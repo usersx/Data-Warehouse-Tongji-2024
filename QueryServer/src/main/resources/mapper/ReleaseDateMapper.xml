@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.tongji.queryserver.mapper.ReleaseDateMapper">
+  <resultMap id="BaseResultMap" type="edu.tongji.queryserver.entity.ReleaseDate">
+    <id column="date_uuid" jdbcType="BINARY" property="dateUuid" />
+    <result column="movie_id" jdbcType="VARCHAR" property="movieId" />
+    <result column="year" jdbcType="INTEGER" property="year" />
+    <result column="month" jdbcType="INTEGER" property="month" />
+    <result column="day" jdbcType="INTEGER" property="day" />
+    <result column="weekday" jdbcType="INTEGER" property="weekday" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="byte[]">
+    delete from ReleaseDate
+    where date_uuid = #{dateUuid,jdbcType=BINARY}
+  </delete>
+  <insert id="insert" parameterType="edu.tongji.queryserver.entity.ReleaseDate">
+    <selectKey keyProperty="dateUuid" order="AFTER" resultType="byte[]">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ReleaseDate (movie_id, year, month, 
+      day, weekday)
+    values (#{movieId,jdbcType=VARCHAR}, #{year,jdbcType=INTEGER}, #{month,jdbcType=INTEGER}, 
+      #{day,jdbcType=INTEGER}, #{weekday,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="edu.tongji.queryserver.entity.ReleaseDate">
+    update ReleaseDate
+    set movie_id = #{movieId,jdbcType=VARCHAR},
+      year = #{year,jdbcType=INTEGER},
+      month = #{month,jdbcType=INTEGER},
+      day = #{day,jdbcType=INTEGER},
+      weekday = #{weekday,jdbcType=INTEGER}
+    where date_uuid = #{dateUuid,jdbcType=BINARY}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="byte[]" resultMap="BaseResultMap">
+    select date_uuid, movie_id, year, month, day, weekday
+    from ReleaseDate
+    where date_uuid = #{dateUuid,jdbcType=BINARY}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select date_uuid, movie_id, year, month, day, weekday
+    from ReleaseDate
+  </select>
+</mapper>

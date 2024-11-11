@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.tongji.queryserver.mapper.ActorMapper">
+  <resultMap id="BaseResultMap" type="edu.tongji.queryserver.entity.Actor">
+    <id column="actor_uuid" jdbcType="BINARY" property="actorUuid" />
+    <result column="actor_name" jdbcType="VARCHAR" property="actorName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="byte[]">
+    delete from Actor
+    where actor_uuid = #{actorUuid,jdbcType=BINARY}
+  </delete>
+  <insert id="insert" parameterType="edu.tongji.queryserver.entity.Actor">
+    <selectKey keyProperty="actorUuid" order="AFTER" resultType="byte[]">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into Actor (actor_name)
+    values (#{actorName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="edu.tongji.queryserver.entity.Actor">
+    update Actor
+    set actor_name = #{actorName,jdbcType=VARCHAR}
+    where actor_uuid = #{actorUuid,jdbcType=BINARY}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="byte[]" resultMap="BaseResultMap">
+    select actor_uuid, actor_name
+    from Actor
+    where actor_uuid = #{actorUuid,jdbcType=BINARY}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select actor_uuid, actor_name
+    from Actor
+  </select>
+</mapper>

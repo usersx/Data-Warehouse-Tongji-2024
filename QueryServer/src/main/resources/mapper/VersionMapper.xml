@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.tongji.queryserver.mapper.VersionMapper">
+  <resultMap id="BaseResultMap" type="edu.tongji.queryserver.entity.Version">
+    <id column="version_uuid" jdbcType="BINARY" property="versionUuid" />
+    <result column="movie_id" jdbcType="VARCHAR" property="movieId" />
+    <result column="edition" jdbcType="VARCHAR" property="edition" />
+    <result column="language" jdbcType="VARCHAR" property="language" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="byte[]">
+    delete from Version
+    where version_uuid = #{versionUuid,jdbcType=BINARY}
+  </delete>
+  <insert id="insert" parameterType="edu.tongji.queryserver.entity.Version">
+    <selectKey keyProperty="versionUuid" order="AFTER" resultType="byte[]">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into Version (movie_id, edition, language
+      )
+    values (#{movieId,jdbcType=VARCHAR}, #{edition,jdbcType=VARCHAR}, #{language,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="edu.tongji.queryserver.entity.Version">
+    update Version
+    set movie_id = #{movieId,jdbcType=VARCHAR},
+      edition = #{edition,jdbcType=VARCHAR},
+      language = #{language,jdbcType=VARCHAR}
+    where version_uuid = #{versionUuid,jdbcType=BINARY}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="byte[]" resultMap="BaseResultMap">
+    select version_uuid, movie_id, edition, language
+    from Version
+    where version_uuid = #{versionUuid,jdbcType=BINARY}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select version_uuid, movie_id, edition, language
+    from Version
+  </select>
+</mapper>

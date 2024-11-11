@@ -1,0 +1,11 @@
+server:
+    port: 8081
+
+spring:
+    application:
+      name: QueryServer
+    datasource:
+        url: jdbc:mysql://116.62.55.125:3306/dw2024?useUnicode=true&amp;characterEncoding=utf8&amp;tinyInt1isBit=true
+        username: dev
+        password: czy
+        driver-class-name: com.mysql.cj.jdbc.Driver
