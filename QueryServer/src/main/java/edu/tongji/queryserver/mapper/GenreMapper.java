@@ -1,8 +1,14 @@
 package edu.tongji.queryserver.mapper;
 
 import edu.tongji.queryserver.entity.Genre;
-import java.util.List;
+import edu.tongji.queryserver.entity.Movie;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+import java.util.Map;
+
+@Mapper
 public interface GenreMapper {
     int deleteByPrimaryKey(byte[] genreUuid);
 
@@ -13,4 +19,10 @@ public interface GenreMapper {
     List<Genre> selectAll();
 
     int updateByPrimaryKey(Genre row);
+
+    // 查询每个类别的电影数量
+    List<Map<String, Object>> countMoviesByGenre();
+
+    // 查询属于特定类别的电影列表
+    List<Movie> findMoviesByGenreName(@Param("genreName") String genreName);
 }

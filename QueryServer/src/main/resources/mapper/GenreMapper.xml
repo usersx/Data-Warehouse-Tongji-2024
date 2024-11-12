@@ -32,4 +32,20 @@
     select genre_uuid, movie_id, genre_name
     from Genre
   </select>
+
+  <!-- 查询每个类别的电影数量 -->
+  <select id="countMoviesByGenre" resultType="map">
+    SELECT g.genre_name AS genre, COUNT(g.movie_id) AS movie_count
+    FROM Genre g
+    GROUP BY g.genre_name
+  </select>
+
+  <!-- 根据类别名称查询电影列表 -->
+  <select id="findMoviesByGenreName" parameterType="string" resultType="Movie">
+    SELECT m.*
+    FROM Movie m
+           JOIN Genre g ON m.id = g.movie_id
+    WHERE g.genre_name = #{genreName}
+  </select>
+
 </mapper>
