@@ -42,7 +42,7 @@
   </select>
   <select id="countMoviesByYear" resultType="map">
     SELECT year, COUNT(DISTINCT movie_id) as movie_count
-    FROM releasedate
+    FROM ReleaseDate
     <where>
       <if test="year != null">
         AND year = #{year}
@@ -53,7 +53,7 @@
   </select>
   <select id="countMoviesByYearAndMonth" resultType="map">
     SELECT year, month, COUNT(DISTINCT movie_id) as movie_count
-    FROM releasedate
+    FROM ReleaseDate
     <where>
       <if test="year != null">
         AND year = #{year}
@@ -75,7 +75,7 @@
         ELSE 4
       END as quarter,
       COUNT(DISTINCT movie_id) as movie_count
-    FROM releasedate
+    FROM ReleaseDate
     <where>
       <if test="year != null">
         AND year = #{year}
@@ -92,7 +92,7 @@
   </select>
   <select id="countMoviesByWeekday" resultType="map">
     SELECT weekday, COUNT(DISTINCT movie_id) as movie_count
-    FROM releasedate
+    FROM ReleaseDate
     GROUP BY weekday
     ORDER BY weekday
   </select>
