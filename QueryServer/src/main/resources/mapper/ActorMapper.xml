@@ -5,10 +5,20 @@
     <id column="actor_uuid" jdbcType="BINARY" property="actorUuid" />
     <result column="actor_name" jdbcType="VARCHAR" property="actorName" />
   </resultMap>
+
+  <!-- 添加Movie的ResultMap -->
+  <resultMap id="MovieResultMap" type="edu.tongji.queryserver.entity.Movie">
+    <id column="movie_id" jdbcType="VARCHAR" property="movieId" />
+    <result column="movie_title" jdbcType="VARCHAR" property="movieTitle" />
+    <result column="imdb_score" jdbcType="REAL" property="imdbScore" />
+    <result column="review_num" jdbcType="INTEGER" property="reviewNum" />
+  </resultMap>
+
   <delete id="deleteByPrimaryKey" parameterType="byte[]">
     delete from Actor
     where actor_uuid = #{actorUuid,jdbcType=BINARY}
   </delete>
+
   <insert id="insert" parameterType="edu.tongji.queryserver.entity.Actor">
     <selectKey keyProperty="actorUuid" order="AFTER" resultType="byte[]">
       SELECT LAST_INSERT_ID()
@@ -16,16 +26,19 @@
     insert into Actor (actor_name)
     values (#{actorName,jdbcType=VARCHAR})
   </insert>
+
   <update id="updateByPrimaryKey" parameterType="edu.tongji.queryserver.entity.Actor">
     update Actor
     set actor_name = #{actorName,jdbcType=VARCHAR}
     where actor_uuid = #{actorUuid,jdbcType=BINARY}
   </update>
+
   <select id="selectByPrimaryKey" parameterType="byte[]" resultMap="BaseResultMap">
     select actor_uuid, actor_name
     from Actor
     where actor_uuid = #{actorUuid,jdbcType=BINARY}
   </select>
+
   <select id="selectAll" resultMap="BaseResultMap">
     select actor_uuid, actor_name
     from Actor
@@ -33,18 +46,19 @@
 
   <!-- 查询某演员参演的电影数量（通过名字） -->
   <select id="countMoviesByActorName" parameterType="string" resultType="int">
-    SELECT COUNT(*)
-    FROM Act
-           JOIN Actor ON Act.actor_uuid = Actor.actor_uuid
-    WHERE Actor.actor_name = #{actorName}
+    SELECT COUNT(DISTINCT m.movie_id)
+    FROM Movie m
+    JOIN Act a ON m.movie_id = a.movie_id
+    JOIN Actor actor ON a.actor_uuid = actor.actor_uuid
+    WHERE actor.actor_name = #{actorName}
   </select>
 
   <!-- 查询某演员参演的电影列表（通过名字） -->
   <select id="findMoviesByActorName" parameterType="string" resultMap="MovieResultMap">
     SELECT m.*
     FROM Movie m
-           JOIN Act a ON m.id = a.movie_id
-           JOIN Actor actor ON a.actor_uuid = actor.actor_uuid
+    JOIN Act a ON m.movie_id = a.movie_id
+    JOIN Actor actor ON a.actor_uuid = actor.actor_uuid
     WHERE actor.actor_name = #{actorName}
   </select>
 

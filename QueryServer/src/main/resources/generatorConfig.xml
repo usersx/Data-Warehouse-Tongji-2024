@@ -16,8 +16,7 @@
 
         <!-- 数据库连接 -->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://116.62.55.125:3306/dw2024?useUnicode=true&amp;characterEncoding=utf8&amp;tinyInt1isBit=true"
-                        userId="dev" password="czy">
+                        connectionURL="jdbc:mysql://116.62.55.125:3306/dw2024?useUnicode=true&amp;characterEncoding=utf8&amp;tinyInt1isBit=true"                        userId="dev" password="czy">
             <!-- 设置为true就只读取db_book下的表, 否则会优先读取到mysql的user表  -->
             <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>

@@ -22,7 +22,7 @@ public interface ReleaseDateMapper {
 
     List<Map<String, Object>> countMoviesByYearAndMonth(Integer year, Integer month);
 
-    List<Map<String, Object>> countMoviesByYearAndQuarter(Integer year);
+    List<Map<String, Object>> countMoviesByYearAndQuarter(Integer year, Integer quarter);
 
-    List<Map<String, Object>> countMoviesByWeekday();
+    List<Map<String, Object>> countMoviesByWeekday(Integer weekday);
 }

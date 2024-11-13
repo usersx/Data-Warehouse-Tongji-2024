@@ -21,11 +21,11 @@ public class TimeService {
         return releaseDateMapper.countMoviesByYearAndMonth(year, month);
     }
 
-    public List<Map<String, Object>> getMovieCountByYearAndQuarter(Integer year) {
-        return releaseDateMapper.countMoviesByYearAndQuarter(year);
+    public List<Map<String, Object>> getMovieCountByYearAndQuarter(Integer year, Integer quarter) {
+        return releaseDateMapper.countMoviesByYearAndQuarter(year, quarter);
     }
 
-    public List<Map<String, Object>> getMovieCountByWeekday() {
-        return releaseDateMapper.countMoviesByWeekday();
+    public List<Map<String, Object>> getMovieCountByWeekday(Integer weekday) {
+        return releaseDateMapper.countMoviesByWeekday(weekday);
     }
 } 

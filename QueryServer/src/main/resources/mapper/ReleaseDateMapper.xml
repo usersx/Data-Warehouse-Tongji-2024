@@ -42,7 +42,7 @@
   </select>
   <select id="countMoviesByYear" resultType="map">
     SELECT year, COUNT(DISTINCT movie_id) as movie_count
-    FROM ReleaseDate
+    FROM releasedate
     <where>
       <if test="year != null">
         AND year = #{year}
@@ -67,32 +67,56 @@
   </select>
   <select id="countMoviesByYearAndQuarter" resultType="map">
     SELECT 
-      year,
-      CASE 
-        WHEN month BETWEEN 1 AND 3 THEN 1
-        WHEN month BETWEEN 4 AND 6 THEN 2
-        WHEN month BETWEEN 7 AND 9 THEN 3
-        ELSE 4
-      END as quarter,
-      COUNT(DISTINCT movie_id) as movie_count
+        year,
+        CASE 
+            WHEN month BETWEEN 1 AND 3 THEN 1
+            WHEN month BETWEEN 4 AND 6 THEN 2
+            WHEN month BETWEEN 7 AND 9 THEN 3
+            ELSE 4
+        END as quarter,
+        COUNT(DISTINCT movie_id) as movie_count
     FROM ReleaseDate
     <where>
-      <if test="year != null">
-        AND year = #{year}
-      </if>
+        <if test="year != null">
+            AND year = #{year}
+        </if>
+        <if test="quarter != null">
+            AND CASE 
+                WHEN month BETWEEN 1 AND 3 THEN 1
+                WHEN month BETWEEN 4 AND 6 THEN 2
+                WHEN month BETWEEN 7 AND 9 THEN 3
+                ELSE 4
+            END = #{quarter}
+        </if>
     </where>
     GROUP BY year, 
-      CASE 
-        WHEN month BETWEEN 1 AND 3 THEN 1
-        WHEN month BETWEEN 4 AND 6 THEN 2
-        WHEN month BETWEEN 7 AND 9 THEN 3
-        ELSE 4
-      END
+        CASE 
+            WHEN month BETWEEN 1 AND 3 THEN 1
+            WHEN month BETWEEN 4 AND 6 THEN 2
+            WHEN month BETWEEN 7 AND 9 THEN 3
+            ELSE 4
+        END
     ORDER BY year, quarter
   </select>
   <select id="countMoviesByWeekday" resultType="map">
-    SELECT weekday, COUNT(DISTINCT movie_id) as movie_count
+    SELECT 
+        weekday,
+        CASE weekday
+            WHEN 0 THEN '周一'
+            WHEN 1 THEN '周二'
+            WHEN 2 THEN '周三'
+            WHEN 3 THEN '周四'
+            WHEN 4 THEN '周五'
+            WHEN 5 THEN '周六'
+            WHEN 6 THEN '周日'
+        END as weekday_name,
+        COUNT(DISTINCT movie_id) as movie_count
     FROM ReleaseDate
+    <where>
+        <if test="weekday != null">
+            AND weekday = #{weekday}
+        </if>
+    </where>
     GROUP BY weekday
     ORDER BY weekday
   </select>
