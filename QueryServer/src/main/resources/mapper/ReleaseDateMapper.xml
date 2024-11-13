@@ -40,4 +40,60 @@
     select date_uuid, movie_id, year, month, day, weekday
     from ReleaseDate
   </select>
+  <select id="countMoviesByYear" resultType="map">
+    SELECT year, COUNT(DISTINCT movie_id) as movie_count
+    FROM releasedate
+    <where>
+      <if test="year != null">
+        AND year = #{year}
+      </if>
+    </where>
+    GROUP BY year
+    ORDER BY year
+  </select>
+  <select id="countMoviesByYearAndMonth" resultType="map">
+    SELECT year, month, COUNT(DISTINCT movie_id) as movie_count
+    FROM releasedate
+    <where>
+      <if test="year != null">
+        AND year = #{year}
+      </if>
+      <if test="month != null">
+        AND month = #{month}
+      </if>
+    </where>
+    GROUP BY year, month
+    ORDER BY year, month
+  </select>
+  <select id="countMoviesByYearAndQuarter" resultType="map">
+    SELECT 
+      year,
+      CASE 
+        WHEN month BETWEEN 1 AND 3 THEN 1
+        WHEN month BETWEEN 4 AND 6 THEN 2
+        WHEN month BETWEEN 7 AND 9 THEN 3
+        ELSE 4
+      END as quarter,
+      COUNT(DISTINCT movie_id) as movie_count
+    FROM releasedate
+    <where>
+      <if test="year != null">
+        AND year = #{year}
+      </if>
+    </where>
+    GROUP BY year, 
+      CASE 
+        WHEN month BETWEEN 1 AND 3 THEN 1
+        WHEN month BETWEEN 4 AND 6 THEN 2
+        WHEN month BETWEEN 7 AND 9 THEN 3
+        ELSE 4
+      END
+    ORDER BY year, quarter
+  </select>
+  <select id="countMoviesByWeekday" resultType="map">
+    SELECT weekday, COUNT(DISTINCT movie_id) as movie_count
+    FROM releasedate
+    GROUP BY weekday
+    ORDER BY weekday
+  </select>
 </mapper>

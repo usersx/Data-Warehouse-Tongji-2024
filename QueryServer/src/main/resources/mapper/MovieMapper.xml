@@ -36,4 +36,19 @@
     select movie_id, movie_title, imdb_score, review_num
     from Movie
   </select>
+  <!-- 根据电影名称查询版本数量 -->
+  <select id="countVersionsByMovieTitle" resultType="map">
+    SELECT m.movie_title, COUNT(v.version_uuid) as version_count
+    FROM movie m
+    LEFT JOIN version v ON m.movie_id = v.movie_id
+    WHERE m.movie_title LIKE CONCAT('%', #{movieTitle}, '%')
+    GROUP BY m.movie_id, m.movie_title
+  </select>
+  <!-- 根据电影名称查询所有版本信息 -->
+  <select id="findVersionsByMovieTitle" resultType="map">
+    SELECT m.movie_title, v.edition, v.language
+    FROM movie m
+    JOIN version v ON m.movie_id = v.movie_id
+    WHERE m.movie_title LIKE CONCAT('%', #{movieTitle}, '%')
+  </select>
 </mapper>

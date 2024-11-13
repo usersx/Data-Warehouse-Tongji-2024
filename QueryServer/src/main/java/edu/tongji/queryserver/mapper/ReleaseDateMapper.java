@@ -1,7 +1,8 @@
 package edu.tongji.queryserver.mapper;
 
-import edu.tongji.queryserver.entity.ReleaseDate;
 import java.util.List;
+
+import edu.tongji.queryserver.entity.ReleaseDate;
 
 public interface ReleaseDateMapper {
     int deleteByPrimaryKey(byte[] dateUuid);

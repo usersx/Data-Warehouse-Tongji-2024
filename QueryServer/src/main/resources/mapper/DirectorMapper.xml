@@ -30,4 +30,21 @@
     select director_uuid, director_name
     from Director
   </select>
+  <!-- 根据导演名字查询电影数量 -->
+  <select id="countMoviesByDirectorName" resultType="map">
+    SELECT d.director_name, COUNT(DISTINCT di.movie_id) as movie_count
+    FROM director d
+    LEFT JOIN direct di ON d.director_uuid = di.director_uuid
+    WHERE d.director_name LIKE CONCAT('%', #{directorName}, '%')
+    GROUP BY d.director_uuid, d.director_name
+  </select>
+  <!-- 根据导演名字查询电影列表 -->
+  <select id="findMoviesByDirectorName" resultType="map">
+    SELECT d.director_name, m.movie_title, m.imdb_score
+    FROM director d
+    JOIN direct di ON d.director_uuid = di.director_uuid
+    JOIN movie m ON di.movie_id = m.movie_id
+    WHERE d.director_name LIKE CONCAT('%', #{directorName}, '%')
+    ORDER BY m.imdb_score DESC
+  </select>
 </mapper>
