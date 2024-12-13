@@ -1,0 +1,26 @@
+server:
+    port: 8081
+
+spring:
+    application:
+      name: QueryServer
+    datasource:
+        url: jdbc:mysql://116.62.55.125:3306/dw2024?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        username: dev
+        password: czy
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+# MyBatis配置
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: edu.tongji.queryserver.entity
+    configuration:
+        map-underscore-to-camel-case: true
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志配置
+logging:
+    level:
+        root: INFO
+        edu.tongji.queryserver: DEBUG
+        org.springframework.jdbc: DEBUG

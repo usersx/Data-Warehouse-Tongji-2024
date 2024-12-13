@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.tongji.queryserver.mapper.GenreMapper">
+  <resultMap id="BaseResultMap" type="edu.tongji.queryserver.entity.Genre">
+    <id column="genre_uuid" jdbcType="BINARY" property="genreUuid" />
+    <result column="movie_id" jdbcType="VARCHAR" property="movieId" />
+    <result column="genre_name" jdbcType="VARCHAR" property="genreName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="byte[]">
+    delete from Genre
+    where genre_uuid = #{genreUuid,jdbcType=BINARY}
+  </delete>
+  <insert id="insert" parameterType="edu.tongji.queryserver.entity.Genre">
+    <selectKey keyProperty="genreUuid" order="AFTER" resultType="byte[]">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into Genre (movie_id, genre_name)
+    values (#{movieId,jdbcType=VARCHAR}, #{genreName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="edu.tongji.queryserver.entity.Genre">
+    update Genre
+    set movie_id = #{movieId,jdbcType=VARCHAR},
+      genre_name = #{genreName,jdbcType=VARCHAR}
+    where genre_uuid = #{genreUuid,jdbcType=BINARY}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="byte[]" resultMap="BaseResultMap">
+    select genre_uuid, movie_id, genre_name
+    from Genre
+    where genre_uuid = #{genreUuid,jdbcType=BINARY}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select genre_uuid, movie_id, genre_name
+    from Genre
+  </select>
+
+  <!-- 查询每个类别的电影数量 -->
+  <select id="countMoviesByGenre" resultType="map">
+    SELECT g.genre_name AS genre, COUNT(g.movie_id) AS movie_count
+    FROM Genre g
+    GROUP BY g.genre_name
+  </select>
+
+  <!-- 根据类别名称查询电影列表 -->
+  <select id="findMoviesByGenreName" parameterType="string" resultType="Movie">
+    SELECT m.*
+    FROM Movie m
+           JOIN Genre g ON m.id = g.movie_id
+    WHERE g.genre_name = #{genreName}
+  </select>
+
+</mapper>
