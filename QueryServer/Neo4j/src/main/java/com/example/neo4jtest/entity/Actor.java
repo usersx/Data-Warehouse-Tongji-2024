@@ -2,28 +2,33 @@ package com.example.neo4jtest.entity;
 
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Property;
 
 @Node
 public class Actor {
+
     @Id
-    private Integer actorId;
+    @Property("actor_uuid")
+    private String actorUuid;
+
+    @Property("actor_name")
     private String actorName;
 
-    // 构造函数
-    public Actor() {}
+    public Actor() {
+    }
 
-    public Actor(Integer actorId, String actorName) {
-        this.actorId = actorId;
+    public Actor(String actorUuid, String actorName) {
+        this.actorUuid = actorUuid;
         this.actorName = actorName;
     }
 
-    // Getter和Setter
-    public Integer getActorId() {
-        return actorId;
+    // Getter and Setter
+    public String getActorUuid() {
+        return actorUuid;
     }
 
-    public void setActorId(Integer actorId) {
-        this.actorId = actorId;
+    public void setActorUuid(String actorUuid) {
+        this.actorUuid = actorUuid;
     }
 
     public String getActorName() {

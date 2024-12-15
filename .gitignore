@@ -3,3 +3,5 @@
 /.idea
 /csvs
 csvs.zip
+QueryServer/Neo4j/.idea/
+*.log
