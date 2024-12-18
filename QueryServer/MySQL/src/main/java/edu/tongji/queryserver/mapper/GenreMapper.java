@@ -21,7 +21,7 @@ public interface GenreMapper {
     int updateByPrimaryKey(Genre row);
 
     // 查询每个类别的电影数量
-    List<Map<String, Object>> countMoviesByGenre();
+    List<Map<String, Object>> countMoviesByGenre(@Param("genreName") String genreName);
 
     // 查询属于特定类别的电影列表
     List<Movie> findMoviesByGenreName(@Param("genreName") String genreName);

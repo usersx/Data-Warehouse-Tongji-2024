@@ -14,8 +14,8 @@ public class GenreService {
     @Autowired
     private GenreMapper genreMapper;
 
-    public List<Map<String, Object>> getMovieCountByGenre() {
-        return genreMapper.countMoviesByGenre();
+    public List<Map<String, Object>> getMovieCountByGenre(String genreName) {
+        return genreMapper.countMoviesByGenre(genreName);
     }
 
     public List<Movie> getMoviesByGenreName(String genreName) {

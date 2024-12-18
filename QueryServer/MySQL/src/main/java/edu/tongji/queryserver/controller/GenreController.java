@@ -21,8 +21,8 @@ public class GenreController {
 
     // 获取每个类别的电影数量
     @GetMapping("/movie-count")
-    public ResponseEntity<List<Map<String, Object>>> getMovieCountByGenre() {
-        List<Map<String, Object>> countByGenre = genreService.getMovieCountByGenre();
+    public ResponseEntity<List<Map<String, Object>>> getMovieCountByGenre(@RequestParam String genreName) {
+        List<Map<String, Object>> countByGenre = genreService.getMovieCountByGenre(genreName);
         return ResponseEntity.ok(countByGenre);
     }
 
