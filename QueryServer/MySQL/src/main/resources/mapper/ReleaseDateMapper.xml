@@ -42,7 +42,7 @@
   </select>
   <select id="countMoviesByYear" resultType="map">
     SELECT year, COUNT(DISTINCT movie_id) as movie_count
-    FROM releasedate
+    FROM ReleaseDate
     <where>
       <if test="year != null">
         AND year = #{year}

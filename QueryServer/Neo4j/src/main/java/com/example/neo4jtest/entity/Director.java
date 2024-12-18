@@ -2,28 +2,33 @@ package com.example.neo4jtest.entity;
 
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Property;
 
 @Node
 public class Director {
+
     @Id
-    private Integer directorId;
+    @Property("director_uuid")
+    private String directorUuid;
+
+    @Property("director_name")
     private String directorName;
 
-    // 构造函数
-    public Director() {}
+    public Director() {
+    }
 
-    public Director(Integer directorId, String directorName) {
-        this.directorId = directorId;
+    public Director(String directorUuid, String directorName) {
+        this.directorUuid = directorUuid;
         this.directorName = directorName;
     }
 
-    // Getter和Setter
-    public Integer getDirectorId() {
-        return directorId;
+    // Getter and Setter
+    public String getDirectorUuid() {
+        return directorUuid;
     }
 
-    public void setDirectorId(Integer directorId) {
-        this.directorId = directorId;
+    public void setDirectorUuid(String directorUuid) {
+        this.directorUuid = directorUuid;
     }
 
     public String getDirectorName() {

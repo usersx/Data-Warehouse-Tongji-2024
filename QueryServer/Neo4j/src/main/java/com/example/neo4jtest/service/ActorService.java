@@ -2,19 +2,23 @@ package com.example.neo4jtest.service;
 
 import com.example.neo4jtest.dto.*;
 import com.example.neo4jtest.repository.ActorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class ActorService {
 
-    @Autowired
-    private ActorRepository actorRepository;
+    private final ActorRepository actorRepository;
+
+    public ActorService(ActorRepository actorRepository) {
+        this.actorRepository = actorRepository;
+    }
 
     public List<ActorCollaboration> getFrequentCollaborators(Integer start, Integer perPage) {
         return actorRepository.findFrequentCollaborators(start, perPage);
     }
+
     public List<ActorDirectorCollaboration> getFrequentDirector(Integer start, Integer perPage) {
         return actorRepository.findFrequentDirectors(start, perPage);
     }
@@ -24,14 +28,14 @@ public class ActorService {
     }
 
     public Collaboration2and3ResultDTO getCollaboration2and3(String genre) {
-        double startTime = System.currentTimeMillis(); // 获取开始时间
+        double startTime = System.currentTimeMillis(); // 获取开始时间（毫秒）
 
         ActorDoubleCollaboration doubleCollab = actorRepository.findMostReviewedCollaboration(genre);
         ActorTripleCollaboration tripleCollab = actorRepository.findMostReviewedTripleCollaboration(genre);
 
-        double endTime = System.currentTimeMillis(); // 结束时间
+        double endTime = System.currentTimeMillis(); // 结束时间（毫秒）
 
-        double executionTimeInSeconds = (endTime - startTime) / 1000.0; // 将纳秒转换为秒
+        double executionTimeInSeconds = (endTime - startTime) / 1000.0; // 将毫秒转换为秒
 
         return new Collaboration2and3ResultDTO(doubleCollab, tripleCollab, executionTimeInSeconds);
     }
@@ -47,5 +51,4 @@ public class ActorService {
 
         return new Collaboration2ResultDTO(doubleCollab, executionTimeInSeconds);
     }
-
 }
