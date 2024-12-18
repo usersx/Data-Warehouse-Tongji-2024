@@ -1,6 +1,8 @@
 # 分布式数据库后端
 下载docker
 配置docker path环境
+参考
+https://hive.apache.org/developement/quickstart/
 
 docker pull apache/hive:4.0.0-alpha-2
 
