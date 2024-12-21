@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActorActor {
-    private Integer leftPersonId;
-    private Integer rightPersonId;
+    private String leftPersonId;
+    private String rightPersonId;
     private String movieId;
 }

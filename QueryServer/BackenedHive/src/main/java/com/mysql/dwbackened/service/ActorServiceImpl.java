@@ -12,13 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title ActorServiceImpl
- * @description
- * @create 2023/12/26 17:43
- */
 @Service
 public class ActorServiceImpl implements ActorService {
 
@@ -35,15 +28,6 @@ public class ActorServiceImpl implements ActorService {
         return result;
     }
 
-    /**
-     * @description 查询合作次数大于五的组合总数
-     * @author wyx20
-     * @param[1] page
-     * @param[2] perPage
-     * @throws
-     * @return HashMap<Object>
-     * @time 2023/12/26 21:46
-     */
 
     @Override
     public HashMap<String, Object> selectActorRelationCount(int page, int perPage) {

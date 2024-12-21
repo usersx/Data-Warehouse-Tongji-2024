@@ -12,13 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title DirectorServiceImpl
- * @description
- * @create 2023/12/26 17:32
- */
+
 @Service
 public class DirectorServiceImpl implements DirectorService {
 
@@ -53,7 +47,7 @@ public class DirectorServiceImpl implements DirectorService {
             DirectorActorInfoDto directorActorInfoDto = new DirectorActorInfoDto();
             // 查询对应人名
             directorActorInfoDto.setName1(directorMapper.selectNameByActorId(directorActorCountDto.getDirectorUuid()));
-            directorActorInfoDto.setName2(actorMapper.selectNameByActorId(Integer.parseInt(directorActorCountDto.getActorUuid())));
+            directorActorInfoDto.setName2(actorMapper.selectNameByActorId(directorActorCountDto.getActorUuid()));
             directorActorInfoDto.setTimes(directorActorCountDto.getCooperationCount());
             directorActorInfoDtoList.add(directorActorInfoDto);
         }

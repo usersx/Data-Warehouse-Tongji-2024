@@ -6,13 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title GenreServiceImpl
- * @description
- * @create 2023/12/26 17:09
- */
+
 @Service
 public class GenreServiceImpl implements GenreService {
 

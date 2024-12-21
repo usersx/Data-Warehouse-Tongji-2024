@@ -61,11 +61,11 @@ public interface DirectorMapper extends BaseMapper<Director> {
      * 分页查询导演与演员合作信息
      */
     @Select("SELECT " +
-            "    director_uuid, " +
-            "    actor_uuid, " +
+            "    director_id, " +
+            "    actor_id, " +
             "    COUNT(*) AS COOPERATION_COUNT " +
             "FROM director_actor " +
-            "GROUP BY director_uuid, actor_uuid " +
+            "GROUP BY director_id, actor_id " +
             "HAVING COUNT(*) > 5 " +
             "ORDER BY COOPERATION_COUNT DESC " +
             "LIMIT #{start}, #{perPage}")

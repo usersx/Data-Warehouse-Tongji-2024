@@ -10,13 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title DateMapper
- * @description
- * @create 2023/12/25 8:50
- */
+
 @Mapper
 @Repository
 public interface DateMapper extends BaseMapper<ReleaseDate> {

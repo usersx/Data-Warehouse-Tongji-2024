@@ -30,7 +30,7 @@ public interface ActorMapper extends BaseMapper<Actor> {
     List<String> getActorRecommend(String actor, int amount);
 
     @Select("SELECT actor_name FROM actor WHERE actor_uuid = #{personId} LIMIT 1")
-    String selectNameByActorId(int personId);
+    String selectNameByActorId(String personId);
 
     @Select("SELECT " +
             "    LEFT_PERSON_ID, " +
@@ -73,6 +73,6 @@ public interface ActorMapper extends BaseMapper<Actor> {
             "GROUP BY LEFT_PERSON_ID, RIGHT_PERSON_ID " +
             "HAVING COUNT(*) > 5 " +
             "ORDER BY COOPERATION_COUNT DESC " +
-            "LIMIT #{start}, #{perPage}")
+            "LIMIT 0, 50")
     List<ActorRelationCountDto> selectActorRelationPage(int start, int perPage);
 }
