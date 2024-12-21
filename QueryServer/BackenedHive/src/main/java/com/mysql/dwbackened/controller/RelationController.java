@@ -9,13 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title RelationController
- * @description
- * @create 2023/12/26 20:37
- */
+
 @RestController
 @RequestMapping("/hive/relation")
 public class RelationController {
@@ -26,7 +20,7 @@ public class RelationController {
     @Autowired
     private DirectorService directorService;
 
-    @PostMapping("/count")
+    @GetMapping("/count")
 //    @ApiOperation(notes="",value="获取关系查询的结果总数")
     public HashMap<String,Object> getActorRelationCount(@RequestBody RelationSearchDto relationSearchDto){
         if(relationSearchDto.getSource().equals("actor")){

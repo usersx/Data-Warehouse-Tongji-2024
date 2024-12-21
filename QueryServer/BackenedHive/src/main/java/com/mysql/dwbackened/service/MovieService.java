@@ -6,13 +6,7 @@ import com.mysql.dwbackened.dto.MovieSearchDto;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title MovieService
- * @description
- * @create 2023/12/25 14:39
- */
+
 public interface MovieService {
     HashMap<String, Object> getMovieCount(MovieSearchDto movieSearchDto);
 

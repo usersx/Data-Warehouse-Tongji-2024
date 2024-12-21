@@ -10,13 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title GenreMapper
- * @description
- * @create 2023/12/25 15:00
- */
+
 @Mapper
 public interface GenreMapper extends BaseMapper<Genre> {
     /**

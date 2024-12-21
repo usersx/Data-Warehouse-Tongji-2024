@@ -8,13 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title MovieController
- * @description
- * @create 2023/12/25 14:26
- */
+
 @RestController
 @RequestMapping("/hive/movie")
 public class MovieController {

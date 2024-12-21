@@ -8,13 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title VersionMapper
- * @description
- * @create 2023/12/26 19:56
- */
+
 @Mapper
 public interface VersionMapper extends BaseMapper<Version> {
 

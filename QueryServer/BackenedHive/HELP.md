@@ -7,7 +7,7 @@ https://hive.apache.org/developement/quickstart/
 docker pull apache/hive:4.0.0-alpha-2
 
 
-docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 -v E:\ETL-RUN\Data\table:/dw2024 --name hive7 apache/hive:${HIVE_VERSION}
+docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 -v E:\ETL-RUN\Data\table:/dw2024 --name hive7 apache/hive:4.0.0-alpha-2
 
 Dbeaver 连接
 jdbc:hive2://localhost:10000

@@ -20,12 +20,12 @@ import java.util.Set;
 @Mapper
 public interface MovieMapper extends BaseMapper<Movie> {
 
-    @Select("SELECT movie_id FROM movie WHERE imdb_score >= #{min_score} AND imdb_score <= #{max_score} AND movie_title LIKE CONCAT('%', #{title}, '%')")
+    @Select("SELECT movie_id FROM movie WHERE  movie_title LIKE CONCAT('%', #{title}, '%')")
     Set<String> selectByScoreAndTitle(MovieSearchDto movieSearchDto);
 
     @Select({
             "<script>",
-            "SELECT movie_id, movie_title, imdb_score, review_num FROM movie WHERE movie_id IN",
+            "SELECT movie_id, movie_title,  review_num FROM movie WHERE movie_id IN",
             "<foreach item='movieId' collection='movieSet' open='(' separator=',' close=')'>",
             "#{movieId}",
             "</foreach>",

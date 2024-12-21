@@ -19,9 +19,12 @@ public class ActorController {
     }
 
     @GetMapping("/frequent-actors")
-    public ActorCollaborationResponse getFrequentActors(@RequestParam Integer page, @RequestParam Integer per_page) {
+    public ActorCollaborationResponse getFrequentActors(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "per_page", required = false, defaultValue = "10") Integer perPage) {
+
         double startTime = System.currentTimeMillis(); // 获取开始时间
-        List<ActorCollaboration> collaborations = actorService.getFrequentCollaborators(page, per_page); // 调用服务方法
+        List<ActorCollaboration> collaborations = actorService.getFrequentCollaborators(page, perPage); // 调用服务方法
         double endTime = System.currentTimeMillis(); // 获取结束时间
         double executionTime = (endTime - startTime) / 1000.0; // 计算执行时间
         return new ActorCollaborationResponse(collaborations, executionTime); // 返回新的封装对象
@@ -43,12 +46,14 @@ public class ActorController {
     }
 
     @GetMapping("/frequent-directors")
-    public ActorDirectorCollaborationResponse getFrequentDirectors(@RequestParam Integer page, @RequestParam Integer per_page) {
-        double startTime = System.currentTimeMillis();
-        List<ActorDirectorCollaboration> collaborations = actorService.getFrequentDirector(page, per_page);
+    public ActorDirectorCollaborationResponse getFrequentDirectors(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "per_page", required = false, defaultValue = "10") Integer perPage) {
+
+        double startTime = System.currentTimeMillis(); // 获取开始时间
+        List<ActorDirectorCollaboration> collaborations = actorService.getFrequentDirector(page, perPage);
         double endTime = System.currentTimeMillis();
         double executionTime = (endTime - startTime) / 1000.0;
         return new ActorDirectorCollaborationResponse(collaborations, executionTime);
     }
-
 }

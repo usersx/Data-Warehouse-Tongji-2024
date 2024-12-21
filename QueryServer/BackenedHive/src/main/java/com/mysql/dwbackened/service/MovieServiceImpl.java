@@ -13,13 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title MovieServiceImpl
- * @description
- * @create 2023/12/25 14:39
- */
+
 @Service
 public class MovieServiceImpl implements MovieService{
     @Autowired
@@ -82,8 +76,8 @@ public class MovieServiceImpl implements MovieService{
                     movieDetailDto.setMovieId(movie.getMovieId());
                 if (movieSearchDto.getColumns().contains("title"))
                     movieDetailDto.setMovieTitle(movie.getMovieTitle());
-                if (movieSearchDto.getColumns().contains("score"))
-                    movieDetailDto.setMovieScore(movie.getImdbScore().toString());
+//                if (movieSearchDto.getColumns().contains("score"))
+//                    movieDetailDto.setMovieScore(movie.getImdbScore().toString());
                 if (movieSearchDto.getColumns().contains("date"))
                     movieDetailDto.setDate(dateMapper.selectDateByMovieId(movie.getMovieId()));
                 if (movieSearchDto.getColumns().contains("directors")){

@@ -10,15 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title DateController
- * @description
- * @create 2023/12/25 8:50
- */
+
 @RestController
-@RequestMapping("/date")
+@RequestMapping("/hive/date")
 public class DateController {
       @Autowired
       private DateService dateService;

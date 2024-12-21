@@ -15,5 +15,5 @@ public class ActorDirectorCollaboration implements Serializable {
 
     private String actorName;
     private String directorName;
-    private int collaborationCount;
+    private Long collaborationCount; // 从 int 改为 Long
 }

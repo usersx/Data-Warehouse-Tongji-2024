@@ -6,13 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title DateserviceImpl
- * @description
- * @create 2023/12/25 8:54
- */
+
 @Service
 public class DateserviceImpl implements DateService{
     @Autowired

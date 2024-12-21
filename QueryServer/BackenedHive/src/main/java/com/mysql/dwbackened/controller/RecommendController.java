@@ -11,15 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title SuggestController
- * @description
- * @create 2023/12/26 16:49
- */
+
 @RestController
-@RequestMapping("/recommend")
+@RequestMapping("/hive/recommend")
 public class RecommendController {
     @Autowired
     MovieService movieService;

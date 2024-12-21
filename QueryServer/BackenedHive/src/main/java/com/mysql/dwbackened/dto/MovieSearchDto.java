@@ -6,13 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * @author wyx20
- * @version 1.0
- * @title MovieCountDto
- * @description
- * @create 2023/12/25 14:32
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
