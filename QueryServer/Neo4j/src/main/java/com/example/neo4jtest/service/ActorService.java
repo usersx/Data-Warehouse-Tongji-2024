@@ -15,12 +15,14 @@ public class ActorService {
         this.actorRepository = actorRepository;
     }
 
-    public List<ActorCollaboration> getFrequentCollaborators(Integer start, Integer perPage) {
-        return actorRepository.findFrequentCollaborators(start, perPage);
+    public List<ActorCollaboration> getFrequentCollaborators(Integer page, Integer perPage) {
+        int skip = (page - 1) * perPage; // 计算 SKIP 值
+        return actorRepository.findFrequentCollaborators(skip, perPage);
     }
 
-    public List<ActorDirectorCollaboration> getFrequentDirector(Integer start, Integer perPage) {
-        return actorRepository.findFrequentDirectors(start, perPage);
+    public List<ActorDirectorCollaboration> getFrequentDirector(Integer page, Integer perPage) {
+        int skip = (page - 1) * perPage; // 计算 SKIP 值
+        return actorRepository.findFrequentDirectors(skip, perPage);
     }
 
     public Integer getFrequentCollaboratorNumber() {

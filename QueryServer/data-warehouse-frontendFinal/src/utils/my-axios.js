@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Message } from "element-ui";
 
-let BASE_URL = "http://localhost:5000/";
+let BASE_URL = "http://localhost:8081/";
 
 // create an axios instance
 const my_axios = axios.create({
@@ -19,7 +19,7 @@ my_axios.interceptors.request.use(
     //   config.baseURL = baseURL;
     // }
     if (config.url.includes("hive")) {
-      let baseURL = "http://localhost:7777/";
+      let baseURL = "http://localhost:7777";
       config.baseURL = baseURL;
     }
     else if (config.url.includes("neo4j")) {
