@@ -142,7 +142,6 @@ export default {
       isLoading: false,
       dialogVisible: false,
       result: [],
-      mysql_speed: 0,
       spark_speed: 0,
       neo4j_speed: 0,
       dialogData: {
@@ -170,12 +169,7 @@ export default {
 
   watch: {
     //监听速度变化，重新渲染页面
-    mysql_speed: {
-      handler(newValue, oldValue) {
-        this.mysql_speed = newValue;
-        this.echartsInit();
-      },
-    },
+
     spark_speed: {
       handler(newValue, oldValue) {
         this.spark_speed = newValue;
@@ -250,13 +244,13 @@ export default {
       // if (form.name == "") {
       //   this.$message.warning("请输入姓名!");
       // } else
-      if (form.source == "director" && form.target == "director") {
+      if (form.source === "director" && form.target === "director") {
         this.$message.warning("关系来源和合作对象不能同时为导演!");
       } else {
         this.isLoading = true;
         //mysql查询总数
         this.$axios
-          .post("/relation/count", {
+          .post("/neo4j/actors/frequent-actors-number", {
             source: form.source,
             //target: form.target,
             //name: form.name,
@@ -269,30 +263,29 @@ export default {
             this.totalPage = res.pages;
           })
           .catch((err) => {
-            this.$message.error("当前mysql网络异常，请稍后再试");
+            this.$message.error("当前neo4j网络异常，请稍后再试");
           });
 
         //mysql关系查询
-        this.$axios
-          .post("/relation/detail", {
-            source: form.source,
-            // target: form.target,
-            // name: form.name,
-            // times: form.times,
-            page: 1,
-            per_page: 5,
-          })
-          .then((res) => {
-            console.log(res);
-            this.result = res.data;
-            console.log("mysql结果", this.result);
-            this.mysql_speed = res.consuming_time;
-            this.isLoading = false;
-          })
-          .catch((err) => {
-            this.$message.error("当前mysql网络异常，请稍后再试");
-          });
-        //hive关系查询
+        // this.$axios
+        //   .post("/relation/detail", {
+        //     source: form.source,
+        //     // target: form.target,
+        //     // name: form.name,
+        //     // times: form.times,
+        //     page: 1,
+        //     per_page: 5,
+        //   })
+        //   .then((res) => {
+        //     console.log(res);
+        //     this.result = res.data;
+        //     console.log("mysql结果", this.result);
+        //     this.mysql_speed = res.consuming_time;
+        //     this.isLoading = false;
+        //   })
+        //   .catch((err) => {
+        //     this.$message.error("当前mysql网络异常，请稍后再试");
+        //   });
         this.$axios
           .post("/hive/relation/detail", {
             source: form.source,
@@ -396,29 +389,29 @@ export default {
       //     this.$message.error("当前mysql网络异常，请稍后再试");
       //   });
 
-      //mysql关系查询
-      this.$axios
-        .get("/relation/popular", {
-          // source: form.source,
-          // target: form.target,
-          // name: form.name,
-          // times: form.times,
-          params: {
-            genre: genre,
-            // page: 1,
-            // per_page: 5,
-          }
-        })
-        .then((res) => {
-          console.log(res);
-          this.result = res.data;
-          console.log("mysql结果", this.result);
-          this.mysql_speed = res.consuming_time;
-          this.isLoading = false;
-        })
-        .catch((err) => {
-          this.$message.error("当前mysql网络异常，请稍后再试");
-        });
+      // //mysql关系查询
+      // this.$axios
+      //   .get("/relation/popular", {
+      //     // source: form.source,
+      //     // target: form.target,
+      //     // name: form.name,
+      //     // times: form.times,
+      //     params: {
+      //       genre: genre,
+      //       // page: 1,
+      //       // per_page: 5,
+      //     }
+      //   })
+      //   .then((res) => {
+      //     console.log(res);
+      //     this.result = res.data;
+      //     console.log("mysql结果", this.result);
+      //     this.mysql_speed = res.consuming_time;
+      //     this.isLoading = false;
+      //   })
+      //   .catch((err) => {
+      //     this.$message.error("当前mysql网络异常，请稍后再试");
+      //   });
 
       //neo4j关系查询
       this.$axios
@@ -482,26 +475,26 @@ export default {
 
     getNewPage(form) {
       this.isLoading = true;
-      //mysql关系查询
-      this.$axios
-        .post("/relation/detail", {
-          source: form.source,
-          target: form.target,
-          name: form.name,
-          times: form.times,
-          page: this.currentPage,
-          per_page: 5,
-        })
-        .then((res) => {
-          console.log(res);
-          this.result = res.data;
-          console.log(this.result);
-          this.isLoading = false;
-          this.mysql_speed = res.consuming_time;
-        })
-        .catch((err) => {
-          this.$message.error("当前mysql网络异常，请稍后再试");
-        });
+      // //mysql关系查询
+      // this.$axios
+      //   .post("/relation/detail", {
+      //     source: form.source,
+      //     target: form.target,
+      //     name: form.name,
+      //     times: form.times,
+      //     page: this.currentPage,
+      //     per_page: 5,
+      //   })
+      //   .then((res) => {
+      //     console.log(res);
+      //     this.result = res.data;
+      //     console.log(this.result);
+      //     this.isLoading = false;
+      //     this.mysql_speed = res.consuming_time;
+      //   })
+      //   .catch((err) => {
+      //     this.$message.error("当前mysql网络异常，请稍后再试");
+      //   });
       //hive关系查询
       this.$axios
         .post("/hive/relation/detail", {
@@ -549,7 +542,7 @@ export default {
           })
           .then((res) => {
             console.log(res);
-            this.neo4j_speed = res.time;
+            this.neo4j_speed = res.executionTime;
           })
           .catch((err) => {
             console.log(err);
@@ -568,7 +561,7 @@ export default {
         },
         tooltip: {},
         xAxis: {
-          data: ["mysql", "neo4j", "hive"],
+          data: ["neo4j", "hive"],
         },
         yAxis: {},
         series: [
@@ -576,7 +569,7 @@ export default {
             name: "查询耗时(s)",
             type: "bar",
             // data: [this.mysql_speed, this.neo4j_speed, this.spark_speed],
-            data: [this.mysql_speed, this.neo4j_speed, this.spark_speed],
+            data: [this.neo4j_speed, this.spark_speed],
           },
         ],
       });
