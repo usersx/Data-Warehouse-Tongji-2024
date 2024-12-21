@@ -19,11 +19,11 @@ my_axios.interceptors.request.use(
     //   config.baseURL = baseURL;
     // }
     if (config.url.includes("hive")) {
-      let baseURL = "http://localhost:7777";
+      let baseURL = "http://100.79.54.151:7777";
       config.baseURL = baseURL;
     }
     else if (config.url.includes("neo4j")) {
-      let baseURL = "http://localhost:5555/";
+      let baseURL = "http://100.79.188.243:5555/";
       config.baseURL = baseURL;
     }
     return config;

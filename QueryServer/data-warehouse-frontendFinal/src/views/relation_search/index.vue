@@ -4,35 +4,7 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
   <div class="app-container">
-    <!-- <el-dialog
-      title="电影详情"
-      :visible.sync="dialogVisible"
-      width="25%"
-      center
-      @close="dialogVisible = false"
-    >
-      <div>
-        <p>asin:{{ dialogData.asin }}</p>
-        <p>电影名:{{ dialogData.name }}</p>
-        <p v-if="dialogData.director.length !== 0">
-          导演：
-          <span v-for="i in dialogData.director">{{ i }}, </span>
-        </p>
-        <p v-if="dialogData.actor.length !== 0">
-          演员：
-          <span v-for="i in dialogData.actor">{{ i }}, </span>
-        </p>
-        <p>评分:{{ dialogData.score }}</p>
-        <p>评论总数:{{ dialogData.commentNum }}</p>
-      </div>
-      <div slot="footer">
-        <el-button type="primary" @click="viewOriginWeb()"
-          >查看原始网页</el-button
-        >
-        <br /><br />
-        <el-button @click="dialogVisible = false">关闭</el-button>
-      </div>
-    </el-dialog> -->
+
     <el-row style="height: 50vh">
       <el-col :span="12">
         <el-form ref="form" :model="form" label-width="120px" style="padding-top: 5vh">
@@ -43,26 +15,7 @@
               <el-option label="导演" value="director"></el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-autocomplete
-              v-if="form.source == 'actor'"
-              v-model="form.name"
-              :fetch-suggestions="actorSearchSuggest"
-              placeholder="请输入演员名"
-              style="width: 15vw"
-              clearable
-              @select="handleSelect"
-              size="small"
-            />
-            <el-autocomplete
-              v-if="form.source == 'director'"
-              v-model="form.name"
-              :fetch-suggestions="directorSearchSuggest"
-              placeholder="请输入导演名"
-              style="width: 15vw"
-              clearable
-              @select="handleSelect"
-              size="small"
-            /> -->
+
 
           <el-form-item label="合作对象" style="margin-top: 5vh">
             <el-input v-model="form.target" class="m-2" size="small" style="width: 75px; margin-right: 15px"
@@ -85,15 +38,16 @@
         <div style="text-align: center">
           <el-button type="primary" @click="search(form)" size="small" style="margin-left: 3vh; margin-top: 10px"
             plain>查询</el-button>
+
           <el-form ref="form" :model="form" label-width="120px" style="padding-top: 5vh">
             <el-form-item label="最受关注(评论最多)的演员组合" label-width="250px">
             </el-form-item>
             <el-form-item label="电影类型">
-              <el-autocomplete v-model="form.genre" :fetch-suggestions="genreSearchSuggest" placeholder="请输入电影类型"
-                style="width: 20vw" clearable @select="handleSelect" size="small" />
+              <el-input v-model="form.genre" placeholder="请输入电影类型"
+                               style="width: 20vw" clearable @keyup.enter="handleSelect" size="small" />
             </el-form-item>
           </el-form>
-          <el-button type="primary" @click="searchPopular(form.genre)" size="small"
+          <el-button type="primary" @click="searchPopular(form.genre)" size="small" :disabled="!form.genre.trim()"
             style="margin-left: 3vh; margin-top: 10px" plain>查询</el-button>
         </div>
       </el-col>
@@ -103,26 +57,25 @@
       <el-col :span="10">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="查询结果" name="search">
-            <el-table :data="result" v-loading="isLoading" element-loading-text="正在为您查询..." stripe style="width: 100%"
-              height="400">
-              <el-table-column prop="name1" label="合作者1" width="100" />
-              <el-table-column prop="name2" label="合作者2" width="100" />
-              <el-table-column prop="times" label="合作次数" width="100" />
-              <!--<el-table-column prop="title" label="合作电影" width="250">
-                <template slot-scope="scope">
-                  <div v-for="(item, index) in scope.row.title" :key="index">
-                    {{ item }}
-                  </div>
-                </template>
-              </el-table-column>-->
-              <!-- <div slot="empty" style="text-align: left;">
-                <el-empty :image-size="100" description="裂开"></el-empty>
-              </div> -->
+            <el-table v-if="isTable1Visible" :data="result1" v-loading="isLoading" element-loading-text="正在为您查询..." stripe style="width: 100%"
+              height="600">
+              <el-table-column prop="actorName1" label="合作者1" width="100" />
+              <el-table-column prop="actorName2" label="合作者2" width="100" />
+              <el-table-column prop="collaborationCount" label="合作次数" width="100" />
+
             </el-table>
-            <el-row style="text-align: center; margin-top: 20px">
-              <el-pagination layout="prev, pager, next, jumper" :current-page.sync="currentPage" :page-size="5"
-                :page-count="totalPage" @current-change="getNewPage(form)" small />
-            </el-row>
+
+            <el-table v-if="isTable2Visible" :data="result2" v-loading="isLoading" element-loading-text="正在为您查询..." stripe style="width: 100%"
+                      height="600">
+              <el-table-column prop="name1" label="演员" width="100" />
+              <el-table-column prop="name2" label="导演" width="100" />
+              <el-table-column prop="times" label="合作次数" width="100" />
+
+            </el-table>
+<!--            <el-row style="text-align: center; margin-top: 20px">-->
+<!--              <el-pagination layout="prev, pager, next, jumper" :current-page.sync="currentPage" :page-size="5"-->
+<!--                :page-count="totalPage" @current-change="getNewPage(form)" small />-->
+<!--            </el-row>-->
           </el-tab-pane>
           <el-tab-pane label="耗时对比" name="speed">
             <div id="speed" style="width: 400px; height: 400px"></div>
@@ -144,22 +97,25 @@ export default {
       result: [],
       spark_speed: 0,
       neo4j_speed: 0,
-      dialogData: {
-        asin: "1234",
-        name: "11",
-        director: ["小明", "小红", "小黑", "小白"],
-        actor: ["小蓝", "小黄", "小黑", "小白"],
-        score: 2.5,
-        commentNum: 100,
-      },
+
       form: {
         source: "actor",
         target: "演员",
         name: "",
         times: 5,
+        genre: ''
       },
-      currentPage: 1,
-      totalPage: 0,
+      rules: {
+        genre: [
+          { required: true, message: '请输入电影类型', trigger: 'blur' }
+        ]
+      },
+
+
+      result1: [],
+      result2: [],
+      isTable1Visible: false, // 控制表格1显示与否的属性
+      isTable2Visible: false,  // 控制表格2显示与否的属性isTable1Visible: false, // 控制表格1显示与否的属性
     };
   },
 
@@ -193,51 +149,7 @@ export default {
       console.log(tab, event);
     },
 
-    // directorSearchSuggest(queryString, cb) {
-    //   //导演搜索建议
-    //   this.$axios
-    //     .get("/mysql/suggest/director", {
-    //       params: {
-    //         director: queryString,
-    //         amount: 10,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       console.log(res);
-    //       var result = [];
-    //       for (var i = 0; i < res.suggestions.length; i++) {
-    //         result.push({ value: res.suggestions[i] });
-    //       }
-    //       console.log("这是result", result);
-    //       cb(result);
-    //     })
-    //     .catch((err) => {
-    //       this.$message.error("当前网络异常，请稍后再试");
-    //     });
-    // },
 
-    // actorSearchSuggest(queryString, cb) {
-    //   //演员搜索建议
-    //   this.$axios
-    //     .get("/mysql/suggest/actor", {
-    //       params: {
-    //         actor: queryString,
-    //         amount: 10,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       console.log(res);
-    //       var result = [];
-    //       for (var i = 0; i < res.suggestions.length; i++) {
-    //         result.push({ value: res.suggestions[i] });
-    //       }
-    //       console.log("这是result", result);
-    //       cb(result);
-    //     })
-    //     .catch((err) => {
-    //       this.$message.error("当前网络异常，请稍后再试");
-    //     });
-    // },
 
     search(form) {
       //判断是否有值为空
@@ -248,16 +160,9 @@ export default {
         this.$message.warning("关系来源和合作对象不能同时为导演!");
       } else {
         this.isLoading = true;
-        //mysql查询总数
+        //neo4j查询总数
         this.$axios
-          .post("/neo4j/actors/frequent-actors-number", {
-            source: form.source,
-            //target: form.target,
-            //name: form.name,
-            //times: form.times,
-            page: 1,
-            per_page: 5,
-          })
+          .get("/neo4j/actors/frequent-actors-number", )
           .then((res) => {
             console.log("pages", res.pages);
             this.totalPage = res.pages;
@@ -288,16 +193,23 @@ export default {
         //   });
         this.$axios
           .post("/hive/relation/detail", {
-            source: form.source,
+              source: form.source,
+              page: 1,
+              per_page: 5,
+
+
             // target: form.target,
             // name: form.name,
             // times: form.times,
-            page: 1,
-            per_page: 5,
+
           })
           .then((res) => {
             console.log(res);
+            console.log("我传成功啦");
             this.spark_speed = res.consuming_time;
+            this.isLoading=false
+            // this.result = response.data || [];
+
           })
           .catch((err) => {
             this.$message.error("当前spark网络异常，请稍后再试");
@@ -309,30 +221,42 @@ export default {
             .get("/neo4j/actors/frequent-actors", {
               params: {
                 page: 1,
-                per_page: 5,
+                per_page: 10,
               }
 
             })
             .then((res) => {
               console.log(res);
+              console.log("我跑通啦");
               this.neo4j_speed = res.time;
+              this.isTable1Visible = true;
+              this.isTable2Visible = false; // 确保其他表格不显示
+              this.result1 = res.collaborations || []; // 确保有默认值
+
+
             })
             .catch((err) => {
               this.$message.error("当前neo4j网络异常，请稍后再试");
             });
+
+
         }
-        else if (form.source == "director") {
+        else if (form.source === "director") {
           this.$axios
             .get("/neo4j/actors/frequent-directors", {
               params: {
                 page: 1,
-                per_page: 5,
+                per_page: 10,
               }
 
             })
             .then((res) => {
               console.log(res);
+              console.log("我跑通啦");
               this.neo4j_speed = res.time;
+              this.isTable2Visible = true;
+              this.isTable1Visible = false; // 确保其他表格不显示
+              this.result2 = res.collaborations || []; // 确保有默认值
             })
             .catch((err) => {
               console.log(err);
@@ -428,6 +352,7 @@ export default {
         })
         .then((res) => {
           console.log(res);
+          console.log("我跑通啦");
           this.neo4j_speed = res.time;
         })
         .catch((err) => {
@@ -443,114 +368,16 @@ export default {
         })
         .then((res) => {
           console.log(res);
+          console.log("我跑通啦");
           this.spark_speed = res.consuming_time;
+          this.isLoading=false
+          // this.result = response.data || [];
         })
         .catch((err) => {
           this.$message.error("当前spark网络异常，请稍后再试");
         });
     },
 
-    genreSearchSuggest(queryString, cb) {
-      //类型搜索建议
-      this.$axios
-        .get("/recommend/genre", {
-          params: {
-            genre: queryString || "",
-            amount: 10,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          var result = [];
-          for (var i = 0; i < res.suggestions.length; i++) {
-            result.push({ value: res.suggestions[i] });
-          }
-          console.log("这是result", result);
-          cb(result);
-        })
-        .catch((err) => {
-          this.$message.error("当前网络异常，请稍后再试");
-        });
-    },
-
-    getNewPage(form) {
-      this.isLoading = true;
-      // //mysql关系查询
-      // this.$axios
-      //   .post("/relation/detail", {
-      //     source: form.source,
-      //     target: form.target,
-      //     name: form.name,
-      //     times: form.times,
-      //     page: this.currentPage,
-      //     per_page: 5,
-      //   })
-      //   .then((res) => {
-      //     console.log(res);
-      //     this.result = res.data;
-      //     console.log(this.result);
-      //     this.isLoading = false;
-      //     this.mysql_speed = res.consuming_time;
-      //   })
-      //   .catch((err) => {
-      //     this.$message.error("当前mysql网络异常，请稍后再试");
-      //   });
-      //hive关系查询
-      this.$axios
-        .post("/hive/relation/detail", {
-          source: form.source,
-          // target: form.target,
-          // name: form.name,
-          // times: form.times,
-          page: this.currentPage,
-          per_page: 5,
-        })
-        .then((res) => {
-          console.log(res);
-          this.spark_speed = res.consuming_time;
-        })
-        .catch((err) => {
-          this.$message.error("当前spark网络异常，请稍后再试");
-        });
-
-      if (form.source == "actor") {
-        //neo4j关系查询
-        this.$axios
-          .get("/neo4j/actors/frequent-actors", {
-            params: {
-              page: this.currentPage,
-              per_page: 5,
-            }
-
-          })
-          .then((res) => {
-            console.log(res);
-            this.neo4j_speed = res.time;
-          })
-          .catch((err) => {
-            this.$message.error("当前neo4j网络异常，请稍后再试");
-          });
-      }
-      else if (form.source == "director") {
-        this.$axios
-          .get("/neo4j/actors/frequent-directors", {
-            params: {
-              page: this.currentPage,
-              per_page: 5,
-            }
-
-          })
-          .then((res) => {
-            console.log(res);
-            this.neo4j_speed = res.executionTime;
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$message.error("当前neo4j网络异常，请稍后再试");
-          });
-      }
-
-    },
 
     echartsInit() {
       //使用时只需要把setOption里的对象换成echarts中的options或者自己的参数即可

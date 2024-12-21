@@ -271,9 +271,9 @@ export default {
         this.echartsInit();
       },
     },
-    spark_speed: {
+    hive_speed: {
       handler(newValue, oldValue) {
-        this.spark_speed = newValue;
+        this.hive_speed = newValue;
         this.echartsInit();
       },
     },
@@ -312,9 +312,9 @@ export default {
         };
 
         const movieSearchDto = {
-          movieTitle: this.form.title.trim(),
+          title: this.form.title.trim(),
           min_score: 0,
-          max_score: 5.0,
+          max_score: 10.0,
           year: null,
           month: null,
           season: null,
@@ -326,6 +326,9 @@ export default {
           columns: [],
           month_season: "",
           day_weekday: "",
+          page:1,
+          per_page:10,
+
         };
 
         // 测量 MySQL 查询时间
@@ -354,13 +357,14 @@ export default {
         console.log("这是mysql的结果", response);
         console.log("data", response.data);
 
+        this.result1 = response || [];
 
         // 计算并设置 mysql 查询耗时
         const endTime = performance.now();
         this.mysql_speed = (endTime - startTime).toFixed(2); // 单位为毫秒
         console.log("MySQL 查询耗时 (ms):", this.mysql_speed);
 
-        this.result1 = response || [];
+
 
 
         // 调用hive查询并测量耗时
@@ -377,6 +381,7 @@ export default {
         const hiveEndTime = performance.now();
         this.hive_speed = (hiveEndTime - hiveStartTime).toFixed(2); // 单位为毫秒
         console.log("Hive 查询耗时 (ms):", this.hive_speed);
+
 
 
 
@@ -403,6 +408,7 @@ export default {
       this.isTable3Visible = false; // 确保其他表格不显示
       this.isTable4Visible = false; // 确保其他表格不显示
       this.isTable5Visible = false; // 确保其他表格不显示
+      this.hive_speed=0;
       // 表单验证
       if (!this.form.director.trim()) {
         Message.warning("请输入导演名称!");
@@ -472,6 +478,7 @@ export default {
       this.isTable1Visible = false; // 确保其他表格不显示
       this.isTable4Visible = false; // 确保其他表格不显示
       this.isTable5Visible = false; // 确保其他表格不显示
+      this.hive_speed=0;
       // 表单验证
       if (!this.form.actor.trim()) {
         Message.warning("请输入演员名称!");
@@ -549,6 +556,10 @@ export default {
         const params = {
           year: parseInt(this.form.year, 10) // 修改为年份参数，并确保其为整数
         };
+        const params2 = {
+          year: parseInt(this.form.year, 10) // 修改为年份参数，并确保其为整数
+
+        };
         // 测量 MySQL 查询时间
         const startTime = performance.now();
         // 调用按年份统计电影数量接口
@@ -565,14 +576,16 @@ export default {
 
         // 调用Hive查询并测量耗时
         const startTimeHive = performance.now();
-        const hiveResponse = await my_axios.post("/hive/date/year", params);
+        const hiveResponse = await my_axios.get("/hive/date/year", {params});
         console.log("这是按年份统计的电影数量结果 (Hive)", hiveResponse);
         console.log("data (Hive)", hiveResponse.data);
 
         // 计算并设置 hive 查询耗时
         const endTimeHive = performance.now();
-        this.hive_speed = (endTimeHive - startTimeHive).toFixed(2); // 单位为毫秒
+        this.hive_speed=0;
+        this.hive_speed = (endTimeHive - startTimeHive).toFixed(2); // 单位为秒
         console.log("Hive 查询耗时 (ms):", this.hive_speed);
+
 
         // 如果需要对返回的数据进行处理，可以在这里进行
         // 注意：这里的逻辑取决于返回数据的实际结构
@@ -597,6 +610,7 @@ export default {
       this.isTable3Visible = false; // 确保其他表格不显示
       this.isTable4Visible = false; // 确保其他表格不显示
       this.isTable1Visible = false; // 确保其他表格不显示
+      this.hive_speed=0;
       // 表单验证
       if (!this.form.genre.trim()) {
         Message.warning("请输入电影类别");
@@ -663,29 +677,72 @@ export default {
 
 
     echartsInit() {
-      //使用时只需要把setOption里的对象换成echarts中的options或者自己的参数即可
       console.log("开始初始化");
 
-      this.$echarts.init(document.getElementById("speed")).setOption({
+      const chart = this.$echarts.init(document.getElementById("speed"));
+
+      const option = {
         title: {
-          text: "组合查询耗时对比(ms)",
+          text: '组合查询耗时对比(ms)',
+          textStyle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: '#333' // 标题文字颜色
+          }
         },
-        tooltip: {},
+        tooltip: {
+          trigger: 'axis', // 坐标轴触发，主要在柱状图、折线图等会多个数据重叠的图表类型中使用
+          axisPointer: { // 坐标轴指示器配置项
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
         xAxis: {
+          type: 'category',
           data: ["mysql", "hive"],
+          axisLabel: {
+            color: '#666' // X轴标签文字颜色
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#ccc' // X轴线的颜色
+            }
+          }
         },
-        yAxis: {},
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            color: '#666' // Y轴标签文字颜色
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#ccc' // Y轴线的颜色
+            }
+          }
+        },
         series: [
           {
-            name: "查询耗时(s)",
-            type: "bar",
-            // data: [this.mysql_speed, this.spark_speed],
+            name: '查询耗时(s)',
+            type: 'bar',
+            barWidth: '50%', // 柱子宽度
+            itemStyle: {
+              color: function(params) {
+                // 使用回调函数根据数据索引设置不同的颜色
+                let colorList = ['#247093','#b58d39']; // 自定义颜色列表
+                return colorList[params.dataIndex];
+              }
+            },
+            data: [this.mysql_speed, this.hive_speed],
+          }
+        ]
+      };
 
-            data: [this.mysql_speed, this.spark_speed],
-          },
-        ],
+      chart.setOption(option);
+
+      // 监听窗口大小变化，自动调整图表大小
+      window.addEventListener('resize', () => {
+        chart.resize();
       });
-    },
+    }
   },
 
 
@@ -696,7 +753,96 @@ export default {
 </script>
 
 <style scoped>
+/* 应用于整个应用容器 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* 行布局样式 */
+.el-row {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* 列布局样式 */
+.el-col {
+  padding: 10px;
+}
+
+/* 表单样式 */
+.form-container {
+  background-color: #f9fafc;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 查询标题样式 */
+h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+
+/* 输入框样式 */
+.el-input {
+  width: 100%;
+}
+
+/* 查询按钮样式 */
+.el-button--primary {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+/* 分割线样式 */
 .el-divider--vertical {
-  height: 100vh;
+  height: 100%;
+}
+
+/* 表格样式 */
+.result-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.el-table {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 表格列标题样式 */
+.el-table th {
+  background-color: #f5f7fa;
+  color: #909399;
+}
+
+/* 表格行样式 */
+.el-table tr {
+  transition: background-color 0.3s;
+}
+
+.el-table tr:hover {
+  background-color: #f0f9eb;
+}
+
+/* Tab 样式 */
+.el-tabs__header {
+  margin: 0;
+}
+
+.el-tabs__item {
+  font-size: 16px;
+}
+
+/* 图表容器样式 */
+#speed {
+  margin-top: 20px;
 }
 </style>
