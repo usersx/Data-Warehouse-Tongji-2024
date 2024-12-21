@@ -107,6 +107,31 @@
             </div>
           </el-row>
 
+          <h2>电影类别查询</h2>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="电影类别">
+                <el-input
+                    v-model="form.genre"
+                    placeholder="请输入电影类别"
+                    style="width: 150%"
+                    clearable
+                    @keyup.enter="searchGenre"
+                    size="small"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <div style="text-align: center">
+              <el-button
+                  type="primary"
+                  @click="searchGenre"
+                  size="small"
+                  style="margin-left: 3vh"
+                  plain
+              >查询</el-button>
+            </div>
+          </el-row>
+
         </el-form>
 
 
@@ -145,6 +170,15 @@
                       height="450">
               <el-table-column prop="year" label="year"></el-table-column>
               <el-table-column prop="movie_count" label="movie_count"></el-table-column>
+
+            </el-table>
+
+            <el-table v-if="isTable5Visible" :data="result5" v-loading="isLoading" element-loading-text="正在为您查询..." stripe style="width: 100%"
+                      height="600">
+              <el-table-column prop="imdbScore" label="imdbScore"></el-table-column>
+              <el-table-column prop="movieId" label="movieId"></el-table-column>
+              <el-table-column prop="movieTitle" label="movieTitle"></el-table-column>
+              <el-table-column prop="reviewNum" label="reviewNum"></el-table-column>
 
             </el-table>
 
@@ -211,6 +245,7 @@ export default {
       result2: [],
       result3: [],
       result4: [],
+      result5: [],
       test: "",
       errorMessage: '',
       myChart: null,
@@ -219,6 +254,7 @@ export default {
       isTable2Visible: false,  // 控制表格2显示与否的属性isTable1Visible: false, // 控制表格1显示与否的属性
       isTable3Visible: false, // 控制表格2显示与否的属性isTable1Visible: false, // 控制表格1显示与否的属性
       isTable4Visible: false, // 控制表格2显示与否的属性
+      isTable5Visible: false, // 确保其他表格不显示
 
     };
   },
@@ -259,6 +295,7 @@ export default {
       this.isTable2Visible = false; // 确保其他表格不显示
       this.isTable3Visible = false; // 确保其他表格不显示
       this.isTable4Visible = false; // 确保其他表格不显示
+      this.isTable5Visible = false; // 确保其他表格不显示
       // 表单验证
       if (!this.form.title.trim()) {
         Message.warning("请输入电影名称!");
@@ -365,6 +402,7 @@ export default {
       this.isTable1Visible = false; // 确保其他表格不显示
       this.isTable3Visible = false; // 确保其他表格不显示
       this.isTable4Visible = false; // 确保其他表格不显示
+      this.isTable5Visible = false; // 确保其他表格不显示
       // 表单验证
       if (!this.form.director.trim()) {
         Message.warning("请输入导演名称!");
@@ -433,6 +471,7 @@ export default {
       this.isTable2Visible = false; // 确保其他表格不显示
       this.isTable1Visible = false; // 确保其他表格不显示
       this.isTable4Visible = false; // 确保其他表格不显示
+      this.isTable5Visible = false; // 确保其他表格不显示
       // 表单验证
       if (!this.form.actor.trim()) {
         Message.warning("请输入演员名称!");
@@ -495,6 +534,7 @@ export default {
       this.isTable2Visible = false; // 确保其他表格不显示
       this.isTable3Visible = false; // 确保其他表格不显示
       this.isTable1Visible = false; // 确保其他表格不显示
+      this.isTable5Visible = false; // 确保其他表格不显示
       // 表单验证
       if (!this.form.year || isNaN(this.form.year)) {
         Message.warning("请输入有效的年份!");
@@ -534,6 +574,75 @@ export default {
         this.hive_speed = (endTimeHive - startTimeHive).toFixed(2); // 单位为毫秒
         console.log("Hive 查询耗时 (ms):", this.hive_speed);
 
+        // 如果需要对返回的数据进行处理，可以在这里进行
+        // 注意：这里的逻辑取决于返回数据的实际结构
+
+      } catch (error) {
+        if (error.response) {
+          // 请求已发出，但服务器响应的状态码不在 2xx 范围内
+          this.errorMessage = `请求失败，状态码：${error.response.status}`;
+        } else {
+          // 某种原因在设置请求时触发了错误
+          this.errorMessage = '请求失败，请检查网络连接';
+        }
+        Message.error(this.errorMessage);
+        console.error('Request failed:', error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async searchGenre() {
+      this.isTable5Visible = true;
+      this.isTable2Visible = false; // 确保其他表格不显示
+      this.isTable3Visible = false; // 确保其他表格不显示
+      this.isTable4Visible = false; // 确保其他表格不显示
+      this.isTable1Visible = false; // 确保其他表格不显示
+      // 表单验证
+      if (!this.form.genre.trim()) {
+        Message.warning("请输入电影类别");
+        return;
+      }
+
+      this.isLoading = true;
+      this.errorMessage = '';
+      this.result5 = [];
+
+      try {
+        const params = {
+          genreName: this.form.genre.trim() // 修改为导演名字参数
+        };
+
+        // 测量 MySQL 查询时间
+        const startTime = performance.now();
+        // 调用导演电影数量查询（可选）
+        await my_axios.get("/api/genres/movie-count", {params})
+            .then((res) => {
+
+              // 可以处理分页信息或展示总电影数给用户
+              if (Array.isArray(res)) {
+                let totalGenreCount = res.reduce((acc, item) => acc + (item.movie_count|| 0), 0);
+                console.log("总数:", totalGenreCount);
+                // 这里可以处理分页信息
+              } else {
+                console.warn("未找到有效的数据111");
+              }
+            })
+            .catch((err) => {
+              this.errorMessage = "获取类别电影总数失败，请稍后再试";
+              Message.error(this.errorMessage);
+              throw err;
+            });
+
+        // 调用导演电影列表查询
+        const response = await my_axios.get("/api/genres/movies", {params});
+        console.log("这是按类别电影列表结果", response);
+        console.log("data", response.data);
+
+        // 计算并设置 mysql 查询耗时
+        const endTime = performance.now();
+        this.mysql_speed = (endTime - startTime).toFixed(2); // 单位为毫秒
+        console.log("MySQL 查询耗时 (ms):", this.mysql_speed);
+        this.result5 = response || [];
         // 如果需要对返回的数据进行处理，可以在这里进行
         // 注意：这里的逻辑取决于返回数据的实际结构
 
