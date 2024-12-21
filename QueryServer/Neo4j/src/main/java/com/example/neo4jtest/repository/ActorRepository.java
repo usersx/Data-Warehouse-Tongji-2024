@@ -7,6 +7,7 @@ import com.example.neo4jtest.dto.ActorTripleCollaboration;
 import com.example.neo4jtest.entity.Actor;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
+import org.springframework.data.repository.query.Param; // 导入 @Param
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -18,9 +19,9 @@ public interface ActorRepository extends Neo4jRepository<Actor, String> {
             "WHERE a1.actor_uuid < a2.actor_uuid " +
             "RETURN a1.actor_name AS actorName1, a2.actor_name AS actorName2, COUNT(DISTINCT m) AS collaborationCount " +
             "ORDER BY collaborationCount DESC " +
-            "SKIP ($start - 1) * $perPage " +
-            "LIMIT $perPage")
-    List<ActorCollaboration> findFrequentCollaborators(int start, int perPage);
+            "SKIP $skip " +
+            "LIMIT $limit")
+    List<ActorCollaboration> findFrequentCollaborators(@Param("skip") int skip, @Param("limit") int limit);
 
     // 2. 查找合作次数超过5次的演员组合数量
     @Query("MATCH (a1:Actor)-[:ACTED]->(m:Movie)<-[:ACTED]-(a2:Actor) " +
@@ -34,9 +35,9 @@ public interface ActorRepository extends Neo4jRepository<Actor, String> {
     @Query("MATCH (d:Director)-[:DIRECT]->(m:Movie)<-[:ACTED]-(a:Actor) " +
             "RETURN a.actor_name AS actorName, d.director_name AS directorName, COUNT(DISTINCT m) AS collaborationCount " +
             "ORDER BY collaborationCount DESC " +
-            "SKIP ($start - 1) * $perPage " +
-            "LIMIT $perPage")
-    List<ActorDirectorCollaboration> findFrequentDirectors(int start, int perPage);
+            "SKIP $skip " +
+            "LIMIT $limit")
+    List<ActorDirectorCollaboration> findFrequentDirectors(@Param("skip") int skip, @Param("limit") int limit);
 
     // 4. 在指定流派下，查找评论数最多的演员双人组合
     @Query("MATCH (a1:Actor)-[:ACTED]->(m:Movie)-[:HAS_GENRE]->(g:Genre {genre_name: $genre})<-[:HAS_GENRE]-(m)<-[:ACTED]-(a2:Actor) " +
@@ -44,7 +45,7 @@ public interface ActorRepository extends Neo4jRepository<Actor, String> {
             "RETURN a1.actor_name AS actorName1, a2.actor_name AS actorName2, SUM(m.movie_review_num) AS totalReviews " +
             "ORDER BY totalReviews DESC " +
             "LIMIT 1")
-    ActorDoubleCollaboration findMostReviewedCollaboration(String genre);
+    ActorDoubleCollaboration findMostReviewedCollaboration(@Param("genre") String genre);
 
     // 5. 在指定流派下，查找评论数最多的三人组合
     @Query("MATCH (a1:Actor)-[:ACTED]->(m1:Movie)-[:HAS_GENRE]->(g:Genre {genre_name: $genre})<-[:HAS_GENRE]-(m1)<-[:ACTED]-(a2:Actor), " +
@@ -55,5 +56,5 @@ public interface ActorRepository extends Neo4jRepository<Actor, String> {
             "SUM(m1.movie_review_num + m2.movie_review_num) AS totalReviews " +
             "ORDER BY totalReviews DESC " +
             "LIMIT 1")
-    ActorTripleCollaboration findMostReviewedTripleCollaboration(String genre);
+    ActorTripleCollaboration findMostReviewedTripleCollaboration(@Param("genre") String genre);
 }

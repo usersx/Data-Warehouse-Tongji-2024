@@ -7,14 +7,14 @@ public class ActorCollaboration implements Serializable {
 
     private String actorName1;
     private String actorName2;
-    private int collaborationCount;
+    private Long collaborationCount; // 从 int 改为 Long
 
     // 公开的无参构造函数
     public ActorCollaboration() {
     }
 
     // 带参数的构造函数
-    public ActorCollaboration(String actorName1, String actorName2, int collaborationCount) {
+    public ActorCollaboration(String actorName1, String actorName2, Long collaborationCount) {
         this.actorName1 = actorName1;
         this.actorName2 = actorName2;
         this.collaborationCount = collaborationCount;
@@ -29,7 +29,7 @@ public class ActorCollaboration implements Serializable {
         return actorName2;
     }
 
-    public int getCollaborationCount() {
+    public Long getCollaborationCount() { // 返回类型从 int 改为 Long
         return collaborationCount;
     }
 
@@ -42,7 +42,7 @@ public class ActorCollaboration implements Serializable {
         this.actorName2 = actorName2;
     }
 
-    public void setCollaborationCount(int collaborationCount) {
+    public void setCollaborationCount(Long collaborationCount) { // 参数类型从 int 改为 Long
         this.collaborationCount = collaborationCount;
     }
 }
