@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.tongji.queryserver.mapper.ReleaseDateMapper">
+  <resultMap id="BaseResultMap" type="edu.tongji.queryserver.entity.ReleaseDate">
+    <id column="date_uuid" jdbcType="BINARY" property="dateUuid" />
+    <result column="movie_id" jdbcType="VARCHAR" property="movieId" />
+    <result column="year" jdbcType="INTEGER" property="year" />
+    <result column="month" jdbcType="INTEGER" property="month" />
+    <result column="day" jdbcType="INTEGER" property="day" />
+    <result column="weekday" jdbcType="INTEGER" property="weekday" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="byte[]">
+    delete from ReleaseDate
+    where date_uuid = #{dateUuid,jdbcType=BINARY}
+  </delete>
+  <insert id="insert" parameterType="edu.tongji.queryserver.entity.ReleaseDate">
+    <selectKey keyProperty="dateUuid" order="AFTER" resultType="byte[]">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ReleaseDate (movie_id, year, month, 
+      day, weekday)
+    values (#{movieId,jdbcType=VARCHAR}, #{year,jdbcType=INTEGER}, #{month,jdbcType=INTEGER}, 
+      #{day,jdbcType=INTEGER}, #{weekday,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="edu.tongji.queryserver.entity.ReleaseDate">
+    update ReleaseDate
+    set movie_id = #{movieId,jdbcType=VARCHAR},
+      year = #{year,jdbcType=INTEGER},
+      month = #{month,jdbcType=INTEGER},
+      day = #{day,jdbcType=INTEGER},
+      weekday = #{weekday,jdbcType=INTEGER}
+    where date_uuid = #{dateUuid,jdbcType=BINARY}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="byte[]" resultMap="BaseResultMap">
+    select date_uuid, movie_id, year, month, day, weekday
+    from ReleaseDate
+    where date_uuid = #{dateUuid,jdbcType=BINARY}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select date_uuid, movie_id, year, month, day, weekday
+    from ReleaseDate
+  </select>
+  <select id="countMoviesByYear" resultType="map">
+    SELECT year, COUNT(DISTINCT movie_id) as movie_count
+    FROM ReleaseDate
+    <where>
+      <if test="year != null">
+        AND year = #{year}
+      </if>
+    </where>
+    GROUP BY year
+    ORDER BY year
+  </select>
+  <select id="countMoviesByYearAndMonth" resultType="map">
+    SELECT year, month, COUNT(DISTINCT movie_id) as movie_count
+    FROM ReleaseDate
+    <where>
+      <if test="year != null">
+        AND year = #{year}
+      </if>
+      <if test="month != null">
+        AND month = #{month}
+      </if>
+    </where>
+    GROUP BY year, month
+    ORDER BY year, month
+  </select>
+  <select id="countMoviesByYearAndQuarter" resultType="map">
+    SELECT 
+        year,
+        CASE 
+            WHEN month BETWEEN 1 AND 3 THEN 1
+            WHEN month BETWEEN 4 AND 6 THEN 2
+            WHEN month BETWEEN 7 AND 9 THEN 3
+            ELSE 4
+        END as quarter,
+        COUNT(DISTINCT movie_id) as movie_count
+    FROM ReleaseDate
+    <where>
+        <if test="year != null">
+            AND year = #{year}
+        </if>
+        <if test="quarter != null">
+            AND CASE 
+                WHEN month BETWEEN 1 AND 3 THEN 1
+                WHEN month BETWEEN 4 AND 6 THEN 2
+                WHEN month BETWEEN 7 AND 9 THEN 3
+                ELSE 4
+            END = #{quarter}
+        </if>
+    </where>
+    GROUP BY year, 
+        CASE 
+            WHEN month BETWEEN 1 AND 3 THEN 1
+            WHEN month BETWEEN 4 AND 6 THEN 2
+            WHEN month BETWEEN 7 AND 9 THEN 3
+            ELSE 4
+        END
+    ORDER BY year, quarter
+  </select>
+  <select id="countMoviesByWeekday" resultType="map">
+    SELECT 
+        weekday,
+        CASE weekday
+            WHEN 0 THEN '周一'
+            WHEN 1 THEN '周二'
+            WHEN 2 THEN '周三'
+            WHEN 3 THEN '周四'
+            WHEN 4 THEN '周五'
+            WHEN 5 THEN '周六'
+            WHEN 6 THEN '周日'
+        END as weekday_name,
+        COUNT(DISTINCT movie_id) as movie_count
+    FROM ReleaseDate
+    <where>
+        <if test="weekday != null">
+            AND weekday = #{weekday}
+        </if>
+    </where>
+    GROUP BY weekday
+    ORDER BY weekday
+  </select>
+</mapper>
